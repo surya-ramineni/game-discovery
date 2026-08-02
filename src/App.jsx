@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import rawg from './api/rawg'
+import useDebounce from './hooks/useDebounce'
+import SearchBar from './components/SearchBar'
 import GameGrid from './components/GameGrid'
 import Spinner from './components/Spinner'
 import ErrorMessage from './components/ErrorMessage'
@@ -10,11 +12,23 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
+  const [query, setQuery] = useState('')
+  const debouncedQuery = useDebounce(query, 500)
+
   useEffect(() => {
     let ignore = false
 
+    setLoading(true)
+    setError(null)
+
     rawg
-      .get('/games', { params: { ordering: '-added', page_size: 20 } })
+      .get('/games', {
+        params: {
+          ordering: '-added',
+          page_size: 20,
+          search: debouncedQuery || undefined,
+        },
+      })
       .then((res) => {
         if (!ignore) setGames(res.data.results)
       })
@@ -28,11 +42,13 @@ function App() {
     return () => {
       ignore = true
     }
-  }, [])
+  }, [debouncedQuery])
 
   return (
     <main className="page">
-      <h1>New and trending</h1>
+      <h1>{debouncedQuery ? `Results for “${debouncedQuery}”` : 'New and trending'}</h1>
+
+      <SearchBar value={query} onChange={setQuery} />
 
       {loading ? (
         <Spinner />
@@ -40,7 +56,7 @@ function App() {
         <ErrorMessage error={error} />
       ) : games.length === 0 ? (
         // empty list is a successful response, not an error
-        <p className="empty">No games found.</p>
+        <p className="empty">No games match that search.</p>
       ) : (
         <GameGrid games={games} />
       )}
