@@ -1,16 +1,38 @@
-# React + Vite
+# Game Discovery
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Browse, search and save games, powered by the [RAWG](https://rawg.io/apidocs) API.
+React 19 + Vite + React Router.
 
-Currently, two official plugins are available:
+## Setup
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+npm install
+cp .env.example .env   # then paste your RAWG key
+npm run dev
+```
 
-## React Compiler
+`VITE_RAWG_KEY` is required. `VITE_RAWG_URL` is optional and defaults to
+`https://api.rawg.io/api`.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Structure
 
-## Expanding the ESLint configuration
+```
+src/
+  api/        rawg.js (axios instance + key interceptor), games.js (endpoints)
+  hooks/      useFetch, useDebounce, useFavorites
+  context/    FavoritesProvider + context object
+  components/ GameCard, GameGrid, SearchBar, Pagination, Spinner, ErrorMessage
+  pages/      Home, GameDetail, Favorites, NotFound
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Routes: `/`, `/game/:id`, `/favorites`.
+
+## Deploying to Vercel
+
+`vercel.json` rewrites all paths to `index.html` so deep links like
+`/game/3498` don't 404 on refresh.
+
+Add `VITE_RAWG_KEY` under **Settings → Environment Variables** in Vercel.
+Vite inlines `VITE_*` variables at build time, so the value is baked into the
+bundle — this is a public, rate-limited key, not a secret. Redeploy after
+changing it; changing the variable alone won't update an existing build.

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const rawg = axios.create({
-  baseURL: 'https://api.rawg.io/api',
+  baseURL: import.meta.env.VITE_RAWG_URL || 'https://api.rawg.io/api',
 });
 
 rawg.interceptors.request.use((config) => {
