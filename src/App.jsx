@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
 import rawg from './api/rawg'
+import GameGrid from './components/GameGrid'
+import Spinner from './components/Spinner'
+import ErrorMessage from './components/ErrorMessage'
 import './App.css'
 
 function App() {
@@ -27,17 +30,21 @@ function App() {
     }
   }, [])
 
-  if (loading) return <p>Loading…</p>
-  if (error) return <p>Couldn’t load games: {error.message}</p>
-  // empty list is a successful response, not an error
-  if (games.length === 0) return <p>No games found.</p>
-
   return (
-    <ul>
-      {games.map((game) => (
-        <li key={game.id}>{game.name}</li>
-      ))}
-    </ul>
+    <main className="page">
+      <h1>New and trending</h1>
+
+      {loading ? (
+        <Spinner />
+      ) : error ? (
+        <ErrorMessage error={error} />
+      ) : games.length === 0 ? (
+        // empty list is a successful response, not an error
+        <p className="empty">No games found.</p>
+      ) : (
+        <GameGrid games={games} />
+      )}
+    </main>
   )
 }
 
