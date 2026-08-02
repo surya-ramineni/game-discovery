@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import useFavorites from '../hooks/useFavorites'
 
 function metacriticClass(score) {
   if (score >= 75) return 'meta good'
@@ -7,6 +8,9 @@ function metacriticClass(score) {
 }
 
 export default function GameCard({ game }) {
+  const { isFavorite, toggleFavorite } = useFavorites()
+  const favorited = isFavorite(game.id)
+
   return (
     <article className="card">
       <Link to={`/game/${game.id}`} className="card-link">
@@ -33,6 +37,20 @@ export default function GameCard({ game }) {
           </div>
         </div>
       </Link>
+
+      <button
+        type="button"
+        className={favorited ? 'fav on' : 'fav'}
+        onClick={() => toggleFavorite(game)}
+        aria-pressed={favorited}
+        aria-label={
+          favorited
+            ? `Remove ${game.name} from favorites`
+            : `Add ${game.name} to favorites`
+        }
+      >
+        {favorited ? '★' : '☆'}
+      </button>
     </article>
   )
 }

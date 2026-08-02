@@ -279,3 +279,82 @@ a {
     padding-inline: 20px;
   }
 }
+
+/* ---------- favorites ---------- */
+
+.nav {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.nav a:hover {
+  background: var(--social-bg);
+}
+
+.nav a.active {
+  color: var(--accent);
+  background: var(--accent-bg);
+}
+
+.badge {
+  font-size: 13px;
+  line-height: 1;
+  padding: 3px 6px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+}
+
+.card {
+  position: relative;
+}
+
+.fav,
+.fav-btn {
+  cursor: pointer;
+}
+
+.fav {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 34px;
+  height: 34px;
+  font-size: 18px;
+  line-height: 1;
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.fav.on {
+  color: #fbbf24;
+}
+
+.fav:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.fav-btn.on {
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.12);
+}
+
+.count {
+  font-size: 15px;
+  margin-bottom: 16px;
+}

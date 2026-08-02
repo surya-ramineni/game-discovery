@@ -1,15 +1,20 @@
 import { Link, useParams } from 'react-router-dom'
 import { getGame } from '../api/games'
 import useFetch from '../hooks/useFetch'
+import useFavorites from '../hooks/useFavorites'
 import Spinner from '../components/Spinner'
 import ErrorMessage from '../components/ErrorMessage'
 
 export default function GameDetail() {
   const { id } = useParams()
+  const { isFavorite, toggleFavorite } = useFavorites()
+
   const { data: game, loading, error, reload } = useFetch(getGame, { id })
 
   if (loading) return <Spinner label="Loading game…" />
   if (error) return <ErrorMessage error={error} onRetry={reload} />
+
+  const favorited = isFavorite(game.id)
 
   return (
     <article className="detail">
@@ -23,6 +28,14 @@ export default function GameDetail() {
 
       <div className="detail-head">
         <h1>{game.name}</h1>
+        <button
+          type="button"
+          className={favorited ? 'btn fav-btn on' : 'btn fav-btn'}
+          onClick={() => toggleFavorite(game)}
+          aria-pressed={favorited}
+        >
+          {favorited ? '★ Saved' : '☆ Save'}
+        </button>
       </div>
 
       <dl className="facts">
