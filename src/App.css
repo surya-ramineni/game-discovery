@@ -358,3 +358,28 @@ a {
   font-size: 15px;
   margin-bottom: 16px;
 }
+
+/* ---------- pagination ---------- */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 40px 0 8px;
+}
+
+.page-count {
+  font-size: 15px;
+}
+
+@media (max-width: 1024px) {
+  .header {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .nav {
+    margin-left: 0;
+  }
+}
