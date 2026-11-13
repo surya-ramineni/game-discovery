@@ -31,7 +31,6 @@ export default function Home() {
   const { data, loading, error, reload } = useFetch(getGames, {
     page,
     search: search || undefined,
-    ordering: '-added',
   })
 
   function goToPage(next) {
@@ -43,7 +42,7 @@ export default function Home() {
 
   return (
     <section>
-      <h1>{search ? `Results for “${search}”` : 'New and trending'}</h1>
+      <h1>{search ? `Results for “${search}”` : 'Top deals'}</h1>
 
       <SearchBar value={term} onChange={setTerm} />
 
@@ -59,11 +58,11 @@ export default function Home() {
         </p>
       ) : (
         <>
-          <p className="count">{data.count.toLocaleString()} games</p>
           <GameGrid games={data.results} />
           <Pagination
             page={page}
             totalPages={data.totalPages}
+            hasNext={data.hasNext}
             onChange={goToPage}
           />
         </>

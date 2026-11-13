@@ -9,16 +9,24 @@ function metacriticClass(score) {
 
 export default function GameCard({ game }) {
   const { isFavorite, toggleFavorite } = useFavorites()
-  const favorited = isFavorite(game.id)
+  const favorited = isFavorite(game.gameID)
+
+  // CheapShark sends releaseDate as Unix seconds and metacriticScore as a
+  // string; 0 / "0" mean "unknown", not a real value.
+  const year = game.releaseDate
+    ? new Date(game.releaseDate * 1000).getFullYear()
+    : null
+  const metacritic = Number(game.metacriticScore) || null
+  const savings = Math.round(Number(game.savings) || 0)
 
   return (
     <article className="card">
-      <Link to={`/game/${game.id}`} className="card-link">
-        {game.background_image ? (
+      <Link to={`/game/${game.gameID}`} className="card-link">
+        {game.thumb ? (
           <img
             className="card-img"
-            src={game.background_image}
-            alt={game.name}
+            src={game.thumb}
+            alt={game.title}
             loading="lazy"
           />
         ) : (
@@ -26,13 +34,26 @@ export default function GameCard({ game }) {
         )}
 
         <div className="card-body">
-          <h3 className="card-title">{game.name}</h3>
+          <h3 className="card-title">{game.title}</h3>
+
+          {/* Favorites are stored without prices (they go stale), so this
+              only renders for live deals. */}
+          {game.salePrice != null && (
+            <div className="price">
+              <span className="price-now">${game.salePrice}</span>
+              {savings > 0 && (
+                <>
+                  <s className="price-was">${game.normalPrice}</s>
+                  <span className="price-off">-{savings}%</span>
+                </>
+              )}
+            </div>
+          )}
+
           <div className="card-meta">
-            <span>{game.released ? game.released.slice(0, 4) : 'TBA'}</span>
-            {game.metacritic != null && (
-              <span className={metacriticClass(game.metacritic)}>
-                {game.metacritic}
-              </span>
+            {year && <span>{year}</span>}
+            {metacritic && (
+              <span className={metacriticClass(metacritic)}>{metacritic}</span>
             )}
           </div>
         </div>
@@ -45,8 +66,8 @@ export default function GameCard({ game }) {
         aria-pressed={favorited}
         aria-label={
           favorited
-            ? `Remove ${game.name} from favorites`
-            : `Add ${game.name} to favorites`
+            ? `Remove ${game.title} from favorites`
+            : `Add ${game.title} to favorites`
         }
       >
         {favorited ? '★' : '☆'}

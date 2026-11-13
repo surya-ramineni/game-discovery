@@ -9,9 +9,9 @@ export default function Layout() {
         <Outlet />
       </main>
       <footer className="footer">
-        Game data from{' '}
-        <a href="https://rawg.io" target="_blank" rel="noreferrer">
-          RAWG
+        Deal data from{' '}
+        <a href="https://www.cheapshark.com" target="_blank" rel="noreferrer">
+          CheapShark
         </a>
       </footer>
     </>

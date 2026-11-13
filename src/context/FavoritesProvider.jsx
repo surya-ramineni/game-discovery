@@ -7,7 +7,9 @@ function readStored() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     const parsed = raw ? JSON.parse(raw) : []
-    return Array.isArray(parsed) ? parsed : []
+    // Entries saved before the CheapShark migration are keyed by RAWG ids,
+    // which don't exist here — drop them rather than render dead cards.
+    return Array.isArray(parsed) ? parsed.filter((f) => f?.gameID) : []
   } catch {
     // Corrupt JSON or storage disabled (private mode) — start empty rather
     // than taking the whole app down.
@@ -29,25 +31,26 @@ export default function FavoritesProvider({ children }) {
 
   const toggleFavorite = useCallback((game) => {
     setFavorites((current) => {
-      if (current.some((f) => f.id === game.id)) {
-        return current.filter((f) => f.id !== game.id)
+      if (current.some((f) => f.gameID === game.gameID)) {
+        return current.filter((f) => f.gameID !== game.gameID)
       }
       // Store only what the card needs, so /favorites renders with no refetch.
+      // Prices are left out on purpose: they'd be stale by the next visit.
       return [
         ...current,
         {
-          id: game.id,
-          name: game.name,
-          background_image: game.background_image,
-          released: game.released,
-          metacritic: game.metacritic ?? null,
+          gameID: game.gameID,
+          title: game.title,
+          thumb: game.thumb ?? null,
+          releaseDate: game.releaseDate ?? null,
+          metacriticScore: game.metacriticScore ?? null,
         },
       ]
     })
   }, [])
 
   const isFavorite = useCallback(
-    (id) => favorites.some((f) => f.id === id),
+    (gameID) => favorites.some((f) => f.gameID === gameID),
     [favorites],
   )
 

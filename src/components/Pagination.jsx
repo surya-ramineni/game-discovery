@@ -1,5 +1,6 @@
-export default function Pagination({ page, totalPages, onChange }) {
-  if (totalPages <= 1) return null
+export default function Pagination({ page, totalPages, hasNext, onChange }) {
+  // `totalPages` can be null (see getGames), so decide on `hasNext` instead.
+  if (page <= 1 && !hasNext) return null
 
   return (
     <nav className="pagination" aria-label="Pagination">
@@ -13,14 +14,14 @@ export default function Pagination({ page, totalPages, onChange }) {
       </button>
 
       <span className="page-count">
-        Page {page} of {totalPages}
+        {totalPages ? `Page ${page} of ${totalPages}` : `Page ${page}`}
       </span>
 
       <button
         type="button"
         className="btn"
         onClick={() => onChange(page + 1)}
-        disabled={page >= totalPages}
+        disabled={!hasNext}
       >
         Next
       </button>

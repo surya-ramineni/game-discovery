@@ -34,7 +34,8 @@
 
 .card-img {
   width: 100%;
-  aspect-ratio: 16 / 9;
+  /* CheapShark thumbs are mostly Steam capsules (231×87). */
+  aspect-ratio: 231 / 87;
   object-fit: cover;
   display: block;
   background: var(--code-bg);
@@ -82,6 +83,29 @@
 }
 .meta.bad {
   color: #f87171;
+}
+
+.price {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+.price-now {
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.price-was {
+  font-size: 13px;
+}
+
+.price-off {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: #4ade80;
 }
 
 /* ---------- states ---------- */
@@ -228,11 +252,10 @@ a {
   margin-bottom: 20px;
 }
 
-.detail-hero {
-  width: 100%;
-  max-height: 380px;
-  object-fit: cover;
-  border-radius: 12px;
+.detail-thumb {
+  width: 231px;
+  max-width: 100%;
+  border-radius: 8px;
   display: block;
 }
 
@@ -268,9 +291,38 @@ a {
   color: var(--text-h);
 }
 
-.about p {
-  white-space: pre-line;
-  max-width: 70ch;
+.deals {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-width: 720px;
+}
+
+.deal {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.deal-store {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 160px;
+  color: var(--text-h);
+}
+
+.deal .price {
+  margin: 0;
+}
+
+.deal .btn {
+  text-decoration: none;
+  font-size: 15px;
 }
 
 @media (max-width: 1024px) {

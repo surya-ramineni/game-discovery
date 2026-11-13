@@ -1,11 +1,13 @@
 export default function ErrorMessage({ error, onRetry }) {
   const status = error?.response?.status
   const message =
-    status === 401
-      ? 'RAWG rejected the API key. Check VITE_RAWG_KEY in your .env.'
-      : status === 404
-        ? 'We couldn’t find that.'
-        : error?.message || 'Something went wrong.'
+    error?.code === 'ECONNABORTED'
+      ? 'CheapShark took too long to respond. Try again in a moment.'
+      : status === 429
+        ? 'Too many requests to CheapShark. Wait a few seconds and try again.'
+        : status === 404
+          ? 'We couldn’t find that.'
+          : error?.message || 'Something went wrong.'
 
   return (
     <div className="error" role="alert">
