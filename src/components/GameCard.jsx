@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import useFavorites from '../hooks/useFavorites'
 
@@ -10,6 +11,10 @@ function metacriticClass(score) {
 export default function GameCard({ game }) {
   const { isFavorite, toggleFavorite } = useFavorites()
   const favorited = isFavorite(game.gameID)
+  // Some store CDNs refuse hotlinked images (Gamesplanet answers 403).
+  // Remember which URL failed so a card reused for another game still tries.
+  const [failedThumb, setFailedThumb] = useState(null)
+  const showThumb = game.thumb && game.thumb !== failedThumb
 
   // CheapShark sends releaseDate as Unix seconds and metacriticScore as a
   // string; 0 / "0" mean "unknown", not a real value. Release dates are
@@ -24,12 +29,13 @@ export default function GameCard({ game }) {
   return (
     <article className="card">
       <Link to={`/game/${game.gameID}`} className="card-link">
-        {game.thumb ? (
+        {showThumb ? (
           <img
             className="card-img"
             src={game.thumb}
             alt={game.title}
             loading="lazy"
+            onError={() => setFailedThumb(game.thumb)}
           />
         ) : (
           <div className="card-img card-img-empty">No image</div>

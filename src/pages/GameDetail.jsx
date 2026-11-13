@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getGame, getStores } from '../api/games'
 import useFetch from '../hooks/useFetch'
@@ -24,6 +25,8 @@ export default function GameDetail() {
   // (it's cached after the first game page). Non-critical: if it fails, deals
   // fall back to "Store <id>" rather than taking the page down.
   const { data: stores, loading: storesLoading } = useFetch(getStores)
+  // Same hotlink-refusal fallback as GameCard: drop the image if it fails.
+  const [failedThumb, setFailedThumb] = useState(null)
 
   if (loading || storesLoading) return <Spinner label="Loading deals…" />
   if (error) return <ErrorMessage error={error} onRetry={reload} />
@@ -40,7 +43,14 @@ export default function GameDetail() {
       </Link>
 
       <div className="detail-head">
-        {info.thumb && <img className="detail-thumb" src={info.thumb} alt="" />}
+        {info.thumb && info.thumb !== failedThumb && (
+          <img
+            className="detail-thumb"
+            src={info.thumb}
+            alt=""
+            onError={() => setFailedThumb(info.thumb)}
+          />
+        )}
         <h1>{info.title}</h1>
         <button
           type="button"
