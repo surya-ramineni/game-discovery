@@ -20,13 +20,24 @@ export default function Home() {
   const [term, setTerm] = useState(search)
   const debouncedTerm = useDebounce(term, 1000)
 
+  // The URL can also change from outside — the Browse link, the back button.
+  // Adopt it into the box, otherwise the effect below would write the old
+  // term straight back into the URL.
+  const [urlSearch, setUrlSearch] = useState(search)
+  if (search !== urlSearch) {
+    setUrlSearch(search)
+    setTerm(search)
+  }
+
   useEffect(() => {
-    if (debouncedTerm === search) return
+    // Only push a settled value. While `term` and its debounced copy differ,
+    // the user is mid-typing or the box was just reset from the URL.
+    if (debouncedTerm !== term || debouncedTerm === search) return
     // Omitting `page` resets to 1 — page 7 of the old query means nothing here.
     setSearchParams(debouncedTerm ? { search: debouncedTerm } : {}, {
       replace: true,
     })
-  }, [debouncedTerm, search, setSearchParams])
+  }, [debouncedTerm, term, search, setSearchParams])
 
   const { data, loading, error, reload } = useFetch(getGames, {
     page,
