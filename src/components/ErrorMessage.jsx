@@ -5,7 +5,7 @@ export default function ErrorMessage({ error, onRetry }) {
       ? 'CheapShark took too long to respond. Try again in a moment.'
       : status === 429
         ? 'Too many requests to CheapShark. Wait a few seconds and try again.'
-        : status === 404
+        : status === 404 || status === 400 // CheapShark sends 400 for ids like 0
           ? 'We couldn’t find that.'
           : error?.message || 'Something went wrong.'
 

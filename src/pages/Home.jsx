@@ -14,7 +14,7 @@ export default function Home() {
   // shareable and survives a refresh.
   const [searchParams, setSearchParams] = useSearchParams()
   const search = searchParams.get('search') ?? ''
-  const page = Math.max(1, Number(searchParams.get('page')) || 1)
+  const page = Math.max(1, Math.floor(Number(searchParams.get('page'))) || 1)
 
   // The input stays local and instant; only the settled value reaches the URL.
   const [term, setTerm] = useState(search)
@@ -62,10 +62,22 @@ export default function Home() {
       ) : error ? (
         <ErrorMessage error={error} onRetry={reload} />
       ) : data.results.length === 0 ? (
-        // Zero results is a successful request, not a failure.
+        // Zero results is a successful request, not a failure. Past the last
+        // page (an old link, or deals have expired since) offer a way back.
         <p className="empty">
-          No games match {search ? `“${search}”` : 'that'}. Try a different
-          search.
+          {page > 1 ? (
+            <>
+              Nothing on page {page}.{' '}
+              <button type="button" className="btn" onClick={() => goToPage(1)}>
+                Back to page 1
+              </button>
+            </>
+          ) : (
+            <>
+              No games match {search ? `“${search}”` : 'that'}. Try a different
+              search.
+            </>
+          )}
         </p>
       ) : (
         <>
