@@ -53,7 +53,17 @@ export async function getGame({ id }) {
   return data;
 }
 
-export async function getStores() {
-  const { data } = await cheapshark.get('/stores');
-  return data;
+// The store list is effectively static, so fetch it once per visit and share
+// the promise. A failed request is forgotten so the next caller retries.
+let storesRequest = null;
+
+export function getStores() {
+  storesRequest ??= cheapshark
+    .get('/stores')
+    .then(({ data }) => data)
+    .catch((err) => {
+      storesRequest = null;
+      throw err;
+    });
+  return storesRequest;
 }

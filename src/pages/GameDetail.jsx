@@ -20,11 +20,12 @@ export default function GameDetail() {
   const { isFavorite, toggleFavorite } = useFavorites()
 
   const { data: game, loading, error, reload } = useFetch(getGame, { id })
-  // Store names and icons. Non-critical: if this fails, deals fall back to
-  // "Store <id>" rather than taking the page down.
-  const { data: stores } = useFetch(getStores)
+  // Store names and icons. Waited for so rows don't flash "Store 7" first
+  // (it's cached after the first game page). Non-critical: if it fails, deals
+  // fall back to "Store <id>" rather than taking the page down.
+  const { data: stores, loading: storesLoading } = useFetch(getStores)
 
-  if (loading) return <Spinner label="Loading deals…" />
+  if (loading || storesLoading) return <Spinner label="Loading deals…" />
   if (error) return <ErrorMessage error={error} onRetry={reload} />
 
   const { info, cheapestPriceEver, deals } = game
