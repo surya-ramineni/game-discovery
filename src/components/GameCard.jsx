@@ -12,9 +12,11 @@ export default function GameCard({ game }) {
   const favorited = isFavorite(game.gameID)
 
   // CheapShark sends releaseDate as Unix seconds and metacriticScore as a
-  // string; 0 / "0" mean "unknown", not a real value.
+  // string; 0 / "0" mean "unknown", not a real value. Release dates are
+  // midnight UTC, so read the year in UTC — a 1 Jan release would otherwise
+  // show the previous year anywhere west of Greenwich.
   const year = game.releaseDate
-    ? new Date(game.releaseDate * 1000).getFullYear()
+    ? new Date(game.releaseDate * 1000).getUTCFullYear()
     : null
   const metacritic = Number(game.metacriticScore) || null
   const savings = Math.round(Number(game.savings) || 0)

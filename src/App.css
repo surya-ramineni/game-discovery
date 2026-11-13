@@ -34,9 +34,10 @@
 
 .card-img {
   width: 100%;
-  /* CheapShark thumbs are mostly Steam capsules (231×87). */
+  /* Most CheapShark thumbs are Steam capsules (231×87) and fill this exactly.
+     The rest (GOG, Humble, portrait covers) are letterboxed, not cropped. */
   aspect-ratio: 231 / 87;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
   background: var(--code-bg);
 }
