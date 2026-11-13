@@ -18,7 +18,7 @@ export default function Home() {
 
   // The input stays local and instant; only the settled value reaches the URL.
   const [term, setTerm] = useState(search)
-  const debouncedTerm = useDebounce(term, 500)
+  const debouncedTerm = useDebounce(term, 1000)
 
   useEffect(() => {
     if (debouncedTerm === search) return
