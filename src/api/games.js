@@ -31,10 +31,13 @@ export async function getGames({ page = 1, search } = {}) {
     },
   });
 
-  // CheapShark exposes this header via Access-Control-Expose-Headers. If it
-  // ever goes missing, fall back to "a full page means there may be more".
-  // Pages count deals, not games, so the fallback checks the raw deal count.
-  const totalPages = Number(headers['x-total-page-count']) || null;
+  // X-Total-Page-Count is the index of the *last* page, not a count: "2" means
+  // pages 0, 1 and 2 exist. CheapShark exposes it via
+  // Access-Control-Expose-Headers; if it ever goes missing, fall back to "a
+  // full page means there may be more". Pages count deals, not games, so the
+  // fallback checks the raw deal count.
+  const lastPageIndex = Number.parseInt(headers['x-total-page-count'], 10);
+  const totalPages = Number.isNaN(lastPageIndex) ? null : lastPageIndex + 1;
 
   return {
     results: onePerGame(data),
